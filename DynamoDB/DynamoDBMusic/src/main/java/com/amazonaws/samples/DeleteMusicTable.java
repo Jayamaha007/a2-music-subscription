@@ -1,5 +1,6 @@
 package com.amazonaws.samples;
 
+import com.amazonaws.auth.profile.ProfileCredentialsProvider;
 import com.amazonaws.client.builder.AwsClientBuilder;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.dynamodbv2.*;
@@ -11,11 +12,9 @@ public class DeleteMusicTable {
 
         String tableName = "Music"; //
 
-        AmazonDynamoDB client = AmazonDynamoDBClientBuilder.standard()
-                .withEndpointConfiguration(
-                        new AwsClientBuilder.EndpointConfiguration(
-                                "http://localhost:8000",
-                                Regions.US_EAST_1.getName()))
+        AmazonDynamoDB client = AmazonDynamoDBClientBuilder.standard().
+                withRegion(Regions.US_EAST_1).
+                withCredentials(new ProfileCredentialsProvider("default"))
                 .build();
 
         DynamoDB dynamoDB = new DynamoDB(client);

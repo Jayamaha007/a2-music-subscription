@@ -1,0 +1,90 @@
+package com.amazonaws.samples;
+
+import java.io.*;
+import java.net.URL;
+import java.util.*;
+
+import com.amazonaws.HttpMethod;
+import com.amazonaws.regions.Regions;
+import com.amazonaws.services.s3.*;
+import com.amazonaws.services.s3.model.*;
+import com.fasterxml.jackson.core.*;
+import com.fasterxml.jackson.databind.*;
+
+public class UploadArtistImagesToS3 {
+
+    public static void main(String[] args) throws Exception {
+
+        String bucketName = "chathraka-music-images-2026";
+
+        AmazonS3 s3 = AmazonS3ClientBuilder.standard()
+                .withRegion(Regions.US_EAST_1)
+                .build(); //
+
+        if (!s3.doesBucketExistV2(bucketName)) {
+            s3.createBucket(bucketName);
+        }
+
+        s3.setBucketAcl(bucketName, CannedAccessControlList.Private);
+
+        JsonParser parser = new JsonFactory().createParser(new File("2026a2_songs.json"));
+        JsonNode rootNode = new ObjectMapper().readTree(parser);
+        JsonNode songs = rootNode.path("songs");
+
+        Set<String> processed = new HashSet<>();
+
+        for (JsonNode node : songs) {
+
+            String artist = node.path("artist").asText();
+            String imageUrl = node.path("img_url").asText();
+
+            if (processed.contains(artist)) continue;
+
+            try {
+                URL url = new URL(imageUrl);
+                InputStream in = url.openStream();
+
+                String fileName = artist.replaceAll("[^a-zA-Z0-9]", "_") + ".jpg";
+                File file = new File(fileName);
+
+                FileOutputStream out = new FileOutputStream(file);
+
+                byte[] buffer = new byte[4096];
+                int bytesRead;
+
+                while ((bytesRead = in.read(buffer)) != -1) {
+                    out.write(buffer, 0, bytesRead);
+                }
+
+                in.close();
+                out.close();
+
+                s3.putObject(new PutObjectRequest(bucketName, fileName, file));
+
+                file.delete();
+                processed.add(artist);
+
+                System.out.println("Uploaded: " + fileName);
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        parser.close();
+    }
+
+    // Secure image access
+    public static String generatePresignedUrl(AmazonS3 s3, String bucket, String key) {
+
+        Date expiration = new Date();
+        expiration.setTime(expiration.getTime() + 3600 * 1000);
+
+        GeneratePresignedUrlRequest request =
+                new GeneratePresignedUrlRequest(bucket, key)
+                        .withMethod(HttpMethod.GET)
+                        .withExpiration(expiration);
+
+        return s3.generatePresignedUrl(request).toString();
+    }
+}
