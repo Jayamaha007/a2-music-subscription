@@ -3,19 +3,13 @@ package com.amazonaws.samples;
 import java.io.File;
 import java.util.Iterator;
 
-import com.amazonaws.auth.profile.ProfileCredentialsProvider;
 import com.amazonaws.client.builder.AwsClientBuilder;
 import com.amazonaws.regions.Regions;
-import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
-import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
-import com.amazonaws.services.dynamodbv2.document.DynamoDB;
-import com.amazonaws.services.dynamodbv2.document.Item;
-import com.amazonaws.services.dynamodbv2.document.Table;
+import com.amazonaws.services.dynamodbv2.*;
+import com.amazonaws.services.dynamodbv2.document.*;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.fasterxml.jackson.databind.*;
 
 public class LoginLoadData {
 
@@ -32,33 +26,24 @@ public class LoginLoadData {
         Table table = dynamoDB.getTable("LoginTable");
 
         JsonParser parser = new JsonFactory().createParser(new File("logindata.json"));
-
         JsonNode rootNode = new ObjectMapper().readTree(parser);
         Iterator<JsonNode> iter = rootNode.iterator();
 
-        ObjectNode currentNode;
-
         while (iter.hasNext()) {
-            currentNode = (ObjectNode) iter.next();
+            JsonNode node = iter.next();
 
-            String email = currentNode.path("email").asText();
-            String username = currentNode.path("user_name").asText();
-            String password = currentNode.path("password").asText();
+            String email = node.path("email").asText();
+            String username = node.path("user_name").asText();
+            String password = node.path("password").asText();
 
-            try {
-                table.putItem(new Item()
-                        .withPrimaryKey("email", email)
-                        .withString("user_name", username)
-                        .withString("password", password));
+            table.putItem(new Item()
+                    .withPrimaryKey("email", email)
+                    .withString("user_name", username)
+                    .withString("password", password));
 
-                System.out.println("PutItem succeeded: " + email);
-
-            } catch (Exception e) {
-                System.err.println("Unable to add user: " + email);
-                System.err.println(e.getMessage());
-                break;
-            }
+            System.out.println("Inserted: " + email);
         }
+
         parser.close();
     }
 }

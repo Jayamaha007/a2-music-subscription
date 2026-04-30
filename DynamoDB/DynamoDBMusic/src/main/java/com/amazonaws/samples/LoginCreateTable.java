@@ -2,18 +2,13 @@ package com.amazonaws.samples;
 
 import java.util.Arrays;
 
-import com.amazonaws.auth.profile.ProfileCredentialsProvider;
 import com.amazonaws.client.builder.AwsClientBuilder;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
 import com.amazonaws.services.dynamodbv2.document.DynamoDB;
 import com.amazonaws.services.dynamodbv2.document.Table;
-import com.amazonaws.services.dynamodbv2.model.AttributeDefinition;
-import com.amazonaws.services.dynamodbv2.model.KeySchemaElement;
-import com.amazonaws.services.dynamodbv2.model.KeyType;
-import com.amazonaws.services.dynamodbv2.model.ProvisionedThroughput;
-import com.amazonaws.services.dynamodbv2.model.ScalarAttributeType;
+import com.amazonaws.services.dynamodbv2.model.*;
 
 public class LoginCreateTable {
 
@@ -34,20 +29,15 @@ public class LoginCreateTable {
             System.out.println("Creating LoginTable...");
 
             Table table = dynamoDB.createTable(tableName,
-                    Arrays.asList(
-                            new KeySchemaElement("email", KeyType.HASH) // Partition key
-                    ),
-                    Arrays.asList(
-                            new AttributeDefinition("email", ScalarAttributeType.S)
-                    ),
+                    Arrays.asList(new KeySchemaElement("email", KeyType.HASH)),
+                    Arrays.asList(new AttributeDefinition("email", ScalarAttributeType.S)),
                     new ProvisionedThroughput(10L, 10L));
 
             table.waitForActive();
-            System.out.println("Table created successfully: " + table.getDescription().getTableStatus());
+            System.out.println("Table created: " + table.getDescription().getTableStatus());
 
         } catch (Exception e) {
-            System.err.println("Error creating table:");
-            System.err.println(e.getMessage());
+            e.printStackTrace();
         }
     }
 }
