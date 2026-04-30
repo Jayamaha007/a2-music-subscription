@@ -19,9 +19,10 @@ public class UploadArtistImagesToS3 {
 
         AmazonS3 s3 = AmazonS3ClientBuilder.standard()
                 .withRegion(Regions.US_EAST_1)
-                .build(); //
+                .build(); // LabRole used
 
         if (!s3.doesBucketExistV2(bucketName)) {
+            System.out.println("Creating bucket...");
             s3.createBucket(bucketName);
         }
 
@@ -36,15 +37,18 @@ public class UploadArtistImagesToS3 {
             String artist = node.path("artist").asText();
             String imageUrl = node.path("img_url").asText();
 
-            if (processed.contains(artist)) continue;
+            // FIX: consistent naming (LOWERCASE!)
+            String fileName = artist.replaceAll("[^a-zA-Z0-9]", "_").toLowerCase() + ".jpg";
+
+            if (processed.contains(fileName)) continue;
 
             try {
+                System.out.println("Processing: " + artist);
+
                 URL url = new URL(imageUrl);
                 InputStream in = url.openStream();
 
-                String fileName = artist.replaceAll("[^a-zA-Z0-9]", "_") + ".jpg";
                 File file = new File(fileName);
-
                 FileOutputStream out = new FileOutputStream(file);
 
                 byte[] buffer = new byte[4096];
@@ -57,22 +61,32 @@ public class UploadArtistImagesToS3 {
                 in.close();
                 out.close();
 
+                // Upload to S3
                 s3.putObject(new PutObjectRequest(bucketName, fileName, file));
-
-                file.delete();
-                processed.add(artist);
 
                 System.out.println("Uploaded: " + fileName);
 
+                // Clean up
+                file.delete();
+                processed.add(fileName);
+
             } catch (Exception e) {
+                System.err.println("Error processing: " + artist);
                 e.printStackTrace();
             }
         }
 
         parser.close();
+
+        // TEST: generate one pre-signed URL
+        String testKey = processed.iterator().next();
+        String url = generatePresignedUrl(s3, bucketName, testKey);
+
+        System.out.println("\nTest URL:");
+        System.out.println(url);
     }
 
-    // Secure image access
+    // ✅ Secure image access
     public static String generatePresignedUrl(AmazonS3 s3, String bucket, String key) {
 
         Date expiration = new Date();
