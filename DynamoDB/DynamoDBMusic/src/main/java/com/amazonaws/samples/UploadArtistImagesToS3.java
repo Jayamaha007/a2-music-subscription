@@ -86,7 +86,7 @@ public class UploadArtistImagesToS3 {
         System.out.println(url);
     }
 
-    // ✅ Secure image access
+    // Secure image access
     public static String generatePresignedUrl(AmazonS3 s3, String bucket, String key) {
 
         Date expiration = new Date();
