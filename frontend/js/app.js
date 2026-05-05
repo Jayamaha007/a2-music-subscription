@@ -4,7 +4,7 @@
  * To switch backends, change BASE_URL to one of the three constants below.
  */
 
-const EC2_URL    = "http://34.229.47.166";
+const EC2_URL    = "http://34.232.160.138";
 const ECS_URL    = "http://18.235.243.92";
 const LAMBDA_URL = "https://8f7ddpjckd.execute-api.us-east-1.amazonaws.com/prod";
 
