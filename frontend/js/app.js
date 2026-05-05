@@ -1,17 +1,15 @@
 /**
  * app.js — Music Subscription API client
  *
- * Swap BASE_URL to point at any of the three backends:
- *   EC2       →  http://<ec2-public-ip>
- *   ECS       →  http://<alb-dns-name>
- *   Lambda    →  https://<api-id>.execute-api.<region>.amazonaws.com/<stage>
+ * To switch backends, change BASE_URL to one of the three constants below.
  */
 
-// Set BASE_URL to whichever backend you want to target:
-//   Lambda  →  https://<api-id>.execute-api.<region>.amazonaws.com/prod  (printed by setup.sh)
-//   EC2     →  http://<ec2-public-ip>
-//   ECS     →  http://<alb-dns-name>
-const BASE_URL = "http://18.235.243.92"; // ECS Fargate — update if task restarts (no ALB)
+const EC2_URL    = "http://34.229.47.166";
+const ECS_URL    = "http://18.235.243.92";
+const LAMBDA_URL = "https://8f7ddpjckd.execute-api.us-east-1.amazonaws.com/prod";
+
+// ↓ Change this to EC2_URL, ECS_URL, or LAMBDA_URL
+const BASE_URL = LAMBDA_URL;
 
 const API = (() => {
 
