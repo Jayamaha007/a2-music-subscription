@@ -1,13 +1,4 @@
-"""
-Subscription routes for the EC2 backend.
-GET    /subscriptions — fetch all subscriptions for a user.
-POST   /subscriptions — add a subscription.
-DELETE /subscriptions — remove a subscription.
 
-Subscriptions table structure:
-  PK: email   (String)
-  SK: song_id (String) — "artist#title"
-"""
 import os
 import boto3
 from boto3.dynamodb.conditions import Key

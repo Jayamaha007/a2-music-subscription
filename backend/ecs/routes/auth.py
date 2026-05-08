@@ -1,8 +1,3 @@
-"""
-Authentication routes for the EC2 backend.
-POST /login    — validate email + password against the LoginTable.
-POST /register — check uniqueness, write new user to the LoginTable.
-"""
 import os
 import boto3
 from flask import Blueprint, request, jsonify

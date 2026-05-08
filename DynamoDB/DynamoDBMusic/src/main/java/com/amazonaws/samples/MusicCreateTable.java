@@ -14,7 +14,6 @@ public class MusicCreateTable {
 
     public static void main(String[] args) throws Exception {
 
-        // FIX: Use AWS instead of localhost
         AmazonDynamoDB client = AmazonDynamoDBClientBuilder.standard().
                 withRegion(Regions.US_EAST_1).
                 withCredentials(new ProfileCredentialsProvider("default"))
@@ -36,7 +35,7 @@ public class MusicCreateTable {
                             new KeySchemaElement("title_year", KeyType.RANGE)
                     )
 
-                    // Attributes (IMPORTANT: must include all index keys)
+                    // Attributes 
                     .withAttributeDefinitions(
                             new AttributeDefinition("artist", ScalarAttributeType.S),
                             new AttributeDefinition("title_year", ScalarAttributeType.S),

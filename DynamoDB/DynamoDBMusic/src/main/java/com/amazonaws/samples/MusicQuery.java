@@ -49,7 +49,7 @@ public class MusicQuery {
         try {
             System.out.println("Songs by Taylor Swift in 2008:");
 
-            // Must query using LSI
+            //  query using LSI
             items = table.getIndex("year-index").query(querySpec);
 
             iterator = items.iterator();
@@ -76,7 +76,7 @@ public class MusicQuery {
         try {
             System.out.println("\nSongs with title 'Love Story':");
 
-            // ⚠Must use GSI
+            // query using GSI
             items = table.getIndex("title-index").query(querySpec);
 
             iterator = items.iterator();

@@ -1,21 +1,4 @@
-"""
-Lambda handler for GET /music.
-Queries or scans the Music DynamoDB table using AND logic across supplied filters.
-Returns { songs: [ { title, artist, year, album, image_url, image_key }, ... ] }
 
-Music table structure (from original querymusic.py):
-  PK:  artist  (String)
-  SK:  title   (String)
-  LSI: year-index  — PK=artist, SK=year  (query by artist + year)
-  GSI: title-index — PK=title            (query by title alone)
-
-Fixes applied over original querymusic.py:
-- Reads filters from API Gateway event['queryStringParameters'] instead of top-level event
-- Handles all filter combinations cleanly (not just artist+year or title)
-- Returns wrapped { songs: [...] } instead of a bare list
-- Adds CORS headers
-- Passes image_key back so the subscribe handler can store it
-"""
 import json
 import os
 import boto3
@@ -46,11 +29,11 @@ def lambda_handler(event, context):
         album  = params.get('album',  '').strip()
         year   = params.get('year',   '').strip()
 
-        # ── LSI query: artist + year ──────────────────────────────────────
+        #  LSI query: artist and year 
         if artist and year:
             result = table.query(
                 IndexName='year-index',
-                KeyConditionExpression=Key('artist').eq(artist) & Key('year').eq(int(year))  # year is Number
+                KeyConditionExpression=Key('artist').eq(artist) & Key('year').eq(int(year))  
             )
             items = result.get('Items', [])
 
@@ -58,7 +41,7 @@ def lambda_handler(event, context):
             if title: items = [i for i in items if title.lower()  in i.get('title', '').lower()]
             if album: items = [i for i in items if album.lower()  in i.get('album', '').lower()]
 
-        # ── GSI query: title ──────────────────────────────────────────────
+        #  GSI query: title 
         elif title:
             result = table.query(
                 IndexName='title-index',
@@ -71,7 +54,7 @@ def lambda_handler(event, context):
             if album:  items = [i for i in items if album.lower()  in i.get('album',  '').lower()]
             if year:   items = [i for i in items if str(i.get('year', '')) == year]
 
-        # ── artist-only query: table PK ───────────────────────────────────
+        #  artist-only query: table PK 
         elif artist:
             result = table.query(
                 KeyConditionExpression=Key('artist').eq(artist)
@@ -80,7 +63,7 @@ def lambda_handler(event, context):
             if album: items = [i for i in items if album.lower() in i.get('album', '').lower()]
             if year:  items = [i for i in items if str(i.get('year', '')) == year]
 
-        # ── Fallback: scan with whatever filters we have ──────────────────
+        #  Fallback: scan with whatever filters we have 
         else:
             filter_parts = []
             if album: filter_parts.append(Attr('album').contains(album))
@@ -96,7 +79,7 @@ def lambda_handler(event, context):
 
             items = result.get('Items', [])
 
-        # ── Attach pre-signed image URL ───────────────────────────────────
+        #  Attach pre-signed image URL 
         for item in items:
             image_key = item.get('image_key', '')
             if image_key:

@@ -1,15 +1,4 @@
-"""
-Lambda handler for POST /register.
-Checks the email is not already registered, then writes the new user to LoginTable.
-Returns { success: true } or { success: false, message }.
 
-Fixes applied over original registerfunction.py:
-- Parses request body from API Gateway event['body'] (JSON string)
-- Returns correct HTTP status codes
-- Adds CORS headers
-- Response keys match frontend expectations (success, message)
-- Uses 'user_name' field name consistently with the login table schema
-"""
 import json
 import os
 import boto3

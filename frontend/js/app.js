@@ -1,23 +1,13 @@
-/**
- * app.js — Music Subscription API client
- *
- * To switch backends, change BASE_URL to one of the three constants below.
- */
+
 
 const EC2_URL    = "http://34.232.160.138";
 const ECS_URL    = "http://18.235.243.92";
 const LAMBDA_URL = "https://8f7ddpjckd.execute-api.us-east-1.amazonaws.com/prod";
 
-// ↓ Change this to EC2_URL, ECS_URL, or LAMBDA_URL
 const BASE_URL = LAMBDA_URL;
 
 const API = (() => {
 
-  /**
-   * Core fetch helper.
-   * Sends JSON, expects JSON back.
-   * Throws on non-2xx responses.
-   */
   async function request(method, path, body = null, params = null) {
     let url = BASE_URL + path;
 
@@ -44,59 +34,36 @@ const API = (() => {
     return data;
   }
 
-  // ── Auth ─────────────────────────────────────────────────────────────────
-
-  /**
-   * POST /login
-   * Returns { success: true, user_name } or { success: false, message }
-   */
+  //  Auth 
+  //  POST /login
+   
   async function login(email, password) {
     return request("POST", "/login", { email, password });
   }
 
-  /**
-   * POST /register
-   * Returns { success: true } or { success: false, message }
-   */
+  // POST /register
   async function register(email, user_name, password) {
     return request("POST", "/register", { email, user_name, password });
   }
 
-  // ── Music ─────────────────────────────────────────────────────────────────
-
-  /**
-   * GET /music
-   * Accepts any combination of { title, artist, year, album } as filters.
-   * Returns { songs: [ { title, artist, year, album, image_url }, … ] }
-   */
+  //  Music 
+  // Get /music
   async function queryMusic({ title = "", artist = "", year = "", album = "" } = {}) {
     return request("GET", "/music", null, { title, artist, year, album });
   }
 
-  // ── Subscriptions ─────────────────────────────────────────────────────────
-
-  /**
-   * GET /subscriptions?email=…
-   * Returns { subscriptions: [ { title, artist, year, album, image_url }, … ] }
-   */
+  //  Subscriptions 
+  // GET /subscriptions
   async function getSubscriptions(email) {
     return request("GET", "/subscriptions", null, { email });
   }
 
-  /**
-   * POST /subscriptions
-   * Body: { email, title, artist, album, year, image_key }
-   * Returns { success: true }
-   */
+  // POST /subscriptions
   async function subscribe(email, song) {
     return request("POST", "/subscriptions", { email, ...song });
   }
 
-  /**
-   * DELETE /subscriptions
-   * Body: { email, title, artist }
-   * Returns { success: true }
-   */
+  //DELETE /subscriptions
   async function unsubscribe(email, title, artist) {
     return request("DELETE", "/subscriptions", { email, title, artist });
   }

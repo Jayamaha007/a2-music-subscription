@@ -13,7 +13,7 @@ public class SubscriptionCreateTable {
 
     public static void main(String[] args) throws Exception {
 
-        // Use LabRole (NO ProfileCredentialsProvider)
+       
         AmazonDynamoDB client = AmazonDynamoDBClientBuilder.standard()
                 .withRegion(Regions.US_EAST_1)
                 .build();

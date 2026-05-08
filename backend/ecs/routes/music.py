@@ -1,14 +1,3 @@
-"""
-Music query routes for the EC2 backend.
-GET /music — query or scan the Music DynamoDB table.
-Accepts optional query params: title, artist, year, album (AND logic).
-
-Music table structure:
-  PK:  artist     (String)
-  SK:  title_year (String) — "title#year"
-  LSI: year-index  — PK=artist, SK=year (Number)
-  GSI: title-index — PK=title, SK=artist
-"""
 import os
 import boto3
 import re

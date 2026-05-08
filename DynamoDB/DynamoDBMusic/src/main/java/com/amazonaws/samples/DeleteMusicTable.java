@@ -10,7 +10,7 @@ public class DeleteMusicTable {
 
     public static void main(String[] args) throws Exception {
 
-        String tableName = "Music"; //
+        String tableName = "Music"; 
 
         AmazonDynamoDB client = AmazonDynamoDBClientBuilder.standard().
                 withRegion(Regions.US_EAST_1).

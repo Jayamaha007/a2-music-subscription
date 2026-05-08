@@ -10,7 +10,7 @@ public class DeleteLoginTable {
 
     public static void main(String[] args) throws Exception {
 
-        String tableName = "LoginTable"; //
+        String tableName = "LoginTable"; 
 
         AmazonDynamoDB client = AmazonDynamoDBClientBuilder.standard().
                 withRegion(Regions.US_EAST_1).

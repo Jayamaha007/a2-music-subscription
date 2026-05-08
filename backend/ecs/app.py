@@ -16,7 +16,7 @@ app.register_blueprint(auth_bp)
 app.register_blueprint(music_bp)
 app.register_blueprint(subscriptions_bp)
 
-# ALB health check endpoint — must return 200 or the service will never stabilise
+# ALB health check endpoint 
 @app.route("/health")
 def health():
     return jsonify({"status": "ok"}), 200

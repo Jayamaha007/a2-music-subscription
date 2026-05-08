@@ -1,15 +1,4 @@
-"""
-Lambda handler for GET /subscriptions.
-Fetches all subscription records for a given user from the Subscriptions table.
-Regenerates a pre-signed S3 URL for each subscription's artist image.
-Returns { subscriptions: [ { title, artist, year, album, image_url }, ... ] }
 
-Subscriptions table structure:
-  PK: email    (String)
-  SK: song_id  (String) — "artist#title"
-
-This handler did not exist in the original codebase and was created from scratch.
-"""
 import json
 import os
 import boto3

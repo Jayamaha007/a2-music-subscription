@@ -8,7 +8,6 @@
 </head>
 <body>
 
-  <!-- ── NAV ── -->
   <nav class="navbar">
     <span class="brand">🎵 Music Subscription</span>
     <div class="nav-user">
@@ -19,17 +18,14 @@
 
   <main class="main-layout">
 
-    <!-- ── LEFT: User + Subscriptions ── -->
     <aside class="sidebar">
 
-      <!-- User area -->
       <section class="card user-area">
         <h2>Welcome</h2>
         <p id="user-info-name" class="user-name"></p>
         <p id="user-info-email" class="user-email"></p>
       </section>
 
-      <!-- Subscription area -->
       <section class="card subscriptions-area">
         <h2>My Subscriptions</h2>
         <div id="subscriptions-loading" class="loading-text">Loading…</div>
@@ -39,7 +35,6 @@
 
     </aside>
 
-    <!-- ── RIGHT: Query area ── -->
     <section class="content">
       <div class="card query-area">
         <h2>Search Music</h2>
@@ -80,23 +75,19 @@
 
   <script src="js/app.js"></script>
   <script>
-    // ── Guard: redirect to login if not authenticated ──
     const userEmail = sessionStorage.getItem("user_email");
     const userName  = sessionStorage.getItem("user_name");
     if (!userEmail) window.location.href = "login.html";
 
-    // ── Populate user area ──
     document.getElementById("nav-username").textContent = userName || userEmail;
     document.getElementById("user-info-name").textContent = userName || "—";
     document.getElementById("user-info-email").textContent = userEmail;
 
-    // ── Logout ──
     document.getElementById("logout-btn").addEventListener("click", () => {
       sessionStorage.clear();
       window.location.href = "login.html";
     });
 
-    // ── Load subscriptions ──
     async function loadSubscriptions() {
       const loadingEl = document.getElementById("subscriptions-loading");
       const emptyEl   = document.getElementById("subscriptions-empty");
@@ -146,7 +137,6 @@
       }
     }
 
-    // ── Music query ──
     document.getElementById("query-form").addEventListener("submit", async (e) => {
       e.preventDefault();
       const errorEl   = document.getElementById("query-error");
@@ -240,7 +230,6 @@
       }
     }
 
-    // ── Utility ──
     function escHtml(str) {
       return String(str ?? "")
         .replace(/&/g, "&amp;")
@@ -249,7 +238,6 @@
         .replace(/"/g, "&quot;");
     }
 
-    // ── Init ──
     loadSubscriptions();
   </script>
 </body>

@@ -19,7 +19,7 @@ public class UploadArtistImagesToS3 {
 
         AmazonS3 s3 = AmazonS3ClientBuilder.standard()
                 .withRegion(Regions.US_EAST_1)
-                .build(); // LabRole used
+                .build(); 
 
         if (!s3.doesBucketExistV2(bucketName)) {
             System.out.println("Creating bucket...");
@@ -37,7 +37,7 @@ public class UploadArtistImagesToS3 {
             String artist = node.path("artist").asText();
             String imageUrl = node.path("img_url").asText();
 
-            // FIX: consistent naming (LOWERCASE!)
+            // file name to lowercase
             String fileName = artist.replaceAll("[^a-zA-Z0-9]", "_").toLowerCase() + ".jpg";
 
             if (processed.contains(fileName)) continue;

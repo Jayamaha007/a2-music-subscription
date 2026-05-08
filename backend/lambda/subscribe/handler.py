@@ -1,18 +1,4 @@
-"""
-Lambda handler for POST /subscriptions.
-Writes a new subscription record to the Subscriptions DynamoDB table.
 
-Subscriptions table structure:
-  PK: email    (String)
-  SK: song_id  (String) — constructed as "artist#title" for uniqueness
-
-Fixes applied over original subscribe.py:
-- Parses request body from API Gateway event['body'] (JSON string)
-- Constructs song_id from artist + title (frontend does not send song_id)
-- Stores image_key so get_subscriptions can regenerate pre-signed URLs
-- Returns { success: true } to match frontend expectations
-- Adds CORS headers
-"""
 import json
 import os
 import boto3
@@ -50,7 +36,7 @@ def lambda_handler(event, context):
             'title':     title,
             'year':      str(body.get('year', '')),
             'album':     body.get('album', ''),
-            'image_key': body.get('image_key', ''),  # S3 key; used to regenerate pre-signed URL
+            'image_key': body.get('image_key', ''),  
         })
 
         return response(200, {'success': True})

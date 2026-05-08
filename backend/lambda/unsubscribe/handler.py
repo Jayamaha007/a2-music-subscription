@@ -1,17 +1,4 @@
-"""
-Lambda handler for DELETE /subscriptions.
-Removes a subscription record from the Subscriptions DynamoDB table.
 
-Subscriptions table structure:
-  PK: email    (String)
-  SK: song_id  (String) — "artist#title"
-
-Fixes applied over original cancelsubscription.py:
-- Parses request body from API Gateway event['body'] (JSON string)
-- Constructs song_id from artist + title (frontend sends title + artist, not song_id)
-- Returns { success: true } to match frontend expectations
-- Adds CORS headers
-"""
 import json
 import os
 import boto3

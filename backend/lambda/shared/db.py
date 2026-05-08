@@ -1,7 +1,4 @@
-"""
-Shared DynamoDB boto3 helpers used by all Lambda handlers.
-Table names and the boto3 resource are initialised once at cold-start.
-"""
+
 import os
 import boto3
 

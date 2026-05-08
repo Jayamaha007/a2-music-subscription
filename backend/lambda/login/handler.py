@@ -1,14 +1,4 @@
-"""
-Lambda handler for POST /login.
-Validates the supplied email and password against the DynamoDB LoginTable.
-Returns { success: true, user_name } on success, { success: false, message } on failure.
 
-Fixes applied over original loginfunction.py:
-- Parses request body from API Gateway event['body'] (JSON string)
-- Returns correct HTTP status codes
-- Adds CORS headers so the browser frontend can call this endpoint
-- Response keys match what the frontend expects (success, user_name)
-"""
 import json
 import os
 import boto3

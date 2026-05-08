@@ -1,8 +1,3 @@
-"""
-Authentication routes for the EC2 backend.
-POST /login    — validate email + password against the LoginTable.
-POST /register — check uniqueness, write new user to the LoginTable.
-"""
 import os
 import boto3
 from flask import Blueprint, request, jsonify
@@ -12,7 +7,7 @@ auth_bp = Blueprint("auth", __name__)
 dynamodb = boto3.resource("dynamodb", region_name=os.environ.get("AWS_REGION", "us-east-1"))
 table    = dynamodb.Table(os.environ.get("DYNAMODB_LOGIN_TABLE", "LoginTable"))
 
-
+# validating email & password against the LoginTable.
 @auth_bp.route("/login", methods=["POST"])
 def login():
     body     = request.get_json(force=True) or {}
@@ -29,7 +24,7 @@ def login():
     else:
         return jsonify({"success": False, "message": "Email or password is incorrect."}), 401
 
-
+# writing a new user to the LoginTable
 @auth_bp.route("/register", methods=["POST"])
 def register():
     body      = request.get_json(force=True) or {}
