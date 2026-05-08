@@ -15,7 +15,7 @@ public class UploadArtistImagesToS3 {
 
     public static void main(String[] args) throws Exception {
 
-        String bucketName = "chathraka-music-images-2026";
+        String bucketName = "nadun-music-images-2026";
 
         AmazonS3 s3 = AmazonS3ClientBuilder.standard()
                 .withRegion(Regions.US_EAST_1)

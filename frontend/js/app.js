@@ -1,15 +1,30 @@
 
+const BACKENDS = {
+  ec2:    "http://34.232.160.138",
+  ecs:    "http://100.26.238.109",
+  lambda: "https://8f7ddpjckd.execute-api.us-east-1.amazonaws.com/prod",
+};
 
-const EC2_URL    = "http://34.232.160.138";
-const ECS_URL    = "http://18.235.243.92";
-const LAMBDA_URL = "https://8f7ddpjckd.execute-api.us-east-1.amazonaws.com/prod";
+let activeBackend = localStorage.getItem("backend") || "lambda";
 
-const BASE_URL = LAMBDA_URL;
+function getBaseUrl() {
+  return BACKENDS[activeBackend];
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  const sel = document.getElementById("backend-select");
+  if (!sel) return;
+  sel.value = activeBackend;
+  sel.addEventListener("change", () => {
+    activeBackend = sel.value;
+    localStorage.setItem("backend", activeBackend);
+  });
+});
 
 const API = (() => {
 
   async function request(method, path, body = null, params = null) {
-    let url = BASE_URL + path;
+    let url = getBaseUrl() + path;
 
     if (params) {
       const qs = Object.entries(params)
@@ -34,36 +49,26 @@ const API = (() => {
     return data;
   }
 
-  //  Auth 
-  //  POST /login
-   
   async function login(email, password) {
     return request("POST", "/login", { email, password });
   }
 
-  // POST /register
   async function register(email, user_name, password) {
     return request("POST", "/register", { email, user_name, password });
   }
 
-  //  Music 
-  // Get /music
   async function queryMusic({ title = "", artist = "", year = "", album = "" } = {}) {
     return request("GET", "/music", null, { title, artist, year, album });
   }
 
-  //  Subscriptions 
-  // GET /subscriptions
   async function getSubscriptions(email) {
     return request("GET", "/subscriptions", null, { email });
   }
 
-  // POST /subscriptions
   async function subscribe(email, song) {
     return request("POST", "/subscriptions", { email, ...song });
   }
 
-  //DELETE /subscriptions
   async function unsubscribe(email, title, artist) {
     return request("DELETE", "/subscriptions", { email, title, artist });
   }

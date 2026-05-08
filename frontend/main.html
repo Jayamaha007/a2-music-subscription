@@ -11,6 +11,11 @@
   <nav class="navbar">
     <span class="brand">🎵 Music Subscription</span>
     <div class="nav-user">
+      <select id="backend-select" class="backend-select">
+        <option value="lambda">Lambda</option>
+        <option value="ec2">EC2</option>
+        <option value="ecs">ECS</option>
+      </select>
       <span id="nav-username"></span>
       <button class="btn btn-outline btn-sm" id="logout-btn">Logout</button>
     </div>
